@@ -1,0 +1,137 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct polynode
+{
+    int exp;
+    int coef;
+    struct polynode *link;
+};
+typedef struct polynode *polypointer;
+char compare(int a,int b);
+polypointer createLink(int n);
+void PrintList(polypointer h);
+polypointer Attach(int e,int c,polypointer d);
+polypointer PolyAdd(polypointer a,polypointer b);
+int main()
+{
+    int m,n;
+    //多项式的项数
+    polypointer a,b,c;
+    printf("请输入多项式 A 的项数 :  ") ;  //构造多项式A
+    scanf("%d",&m) ;
+    a=createLink(m) ;
+    //PrintList(a);
+
+    printf("请输入多项式 B 的项数 :  ") ;  //构造多项式B
+    scanf("%d",&n) ;
+    b=createLink(n) ;
+    //PrintList(b);
+
+    c=PolyAdd(a,b);
+    PrintList(c);
+    return 0;
+}
+
+//创建链表输入函数
+polypointer createLink(int n)
+{
+    polypointer head;
+    polypointer p,pre;
+    int i;
+    head=(polypointer)malloc(sizeof(struct polynode));
+    head->link= NULL;
+    pre=head;
+    for(i=1;i<=n;i++)
+    {
+        p=(polypointer)malloc(sizeof(struct polynode));
+        printf("请输入指数");
+        scanf("%d",&p->exp);
+         printf("请输入系数");
+        scanf("%d",&p->coef);
+        pre->link=p;
+        pre=p;
+    }
+    p->link=NULL;
+    return head;
+}
+
+//创建链表输出函数
+void PrintList(polypointer h)
+{
+    polypointer p;
+    p=h->link;
+    while(p)
+    {
+        printf("%d*X^%d ",p->coef,p->exp);
+        p=p->link;
+        printf("\n");
+    }
+}
+
+//比较两个数字的大小
+char compare(int a,int b)
+{
+    int c=a-b;
+    if(c==0){
+        return '=';
+    }else if(c>0){
+        return '>';
+    }else{
+        return '<';
+    }
+}
+
+//建立一个新节点，把它链接到c结点的后边，并且返回新节点的新指针，即当前节点的指针
+polypointer Attach(int c,int e,polypointer d)
+{
+    polypointer x;
+    x=(polypointer)malloc(sizeof(struct polynode));
+    x->coef=c;
+    x->exp=e;
+    d->link=x;
+    return x;
+}
+
+polypointer PolyAdd(polypointer a,polypointer b)
+{
+    polypointer p,q;
+    polypointer c,d;
+    p=a;q=b;
+    int x;
+    c=(polypointer)malloc(sizeof(struct polynode));
+    //c->link =NULL;
+    d=c;
+    while((p!=NULL) && (q!=NULL))
+    {
+        switch(compare(p->exp,q->exp))
+        {
+        case'=':
+          x=p->coef+q->coef;
+          if(x!=0)
+           d= Attach(x,p->exp,d);
+             p=p->link;q=q->link;
+            break;
+        case'>':
+            d=Attach(p->coef,p->exp,d);
+            p=p->link;
+            break;
+        case'<':
+            d=Attach(q->coef,q->exp,d);
+            q=q->link;
+            break;
+        }
+    }
+    while(p!=NULL){
+         d=Attach(p->coef,p->exp,d);
+         p=p->link;
+    }
+    while(q!=NULL){
+         d=Attach(q->coef,q->exp,d);
+         q=q->link;
+    }
+    d->link =NULL;
+    //p=c;c=c->link;
+    //free(p);//删除临时用的结点
+    return c;//指向第一个元素的指针
+}
