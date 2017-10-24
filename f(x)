@@ -97,7 +97,7 @@ polypointer PolyAdd(polypointer a,polypointer b)
 {
     polypointer p,q;
     polypointer c,d;
-    p=a;q=b;
+    p=a->link;q=b->link;
     int x;
     c=(polypointer)malloc(sizeof(struct polynode));
     //c->link =NULL;
