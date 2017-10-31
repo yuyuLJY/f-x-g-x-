@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#define MAX 10
 struct polynode
 {
     int exp;
@@ -8,30 +8,124 @@ struct polynode
     struct polynode *link;
 };
 typedef struct polynode *polypointer;
+polypointer creatblankstock(polypointer a);//建立空白链
+void writertofile(polypointer a,int n,polypointer b,int m);//写进txt
+void redfromfile(polypointer a,int *m,polypointer b,int *n);//从txt中读出来
 char compare(int a,int b);
 polypointer createLink(int n);
 void PrintList(polypointer h);
 polypointer Attach(int e,int c,polypointer d);
 polypointer PolyAdd(polypointer a,polypointer b);
+//polypointer PolySub(polypointer a,polypointer b);
 int main()
 {
     int m,n;
     //多项式的项数
     polypointer a,b,c;
-    printf("请输入多项式 A 的项数 :  ") ;  //构造多项式A
+
+    //printf("请输入多项式 A 的项数 :  ") ;  //构造多项式A
+    printf("the length of A");
     scanf("%d",&m) ;
     a=createLink(m) ;
     //PrintList(a);
-
-    printf("请输入多项式 B 的项数 :  ") ;  //构造多项式B
+    printf("the length of B") ;  //构造多项式B
     scanf("%d",&n) ;
     b=createLink(n) ;
+    //creatblankstock(a);
+    //creatblankstock(b);
+    //redfromfile(a,&m,b,&n);
+    //PrintList(a);
     //PrintList(b);
 
-    c=PolyAdd(a,b);
-    PrintList(c);
+    //c=PolyAdd(a,b);
+
+    //writertofile(a,m,b,n);
+    //PrintList(b);
+    //writertofile(b,n);
+    //c=PolySub(a,b);
+    //PrintList(c);
     return 0;
 }
+
+polypointer creatblankstock(polypointer a)
+{
+    polypointer head,pre,p;
+    int i;
+    head=(polypointer)malloc(sizeof(struct polynode));
+    head->link=NULL;
+    pre=head;
+    for(i=1;i<=MAX;i++)
+    {
+        p=(polypointer)malloc(sizeof(struct polynode));
+        p->exp=0;p->coef=0;
+        pre->link=p;
+        pre=p;
+    }
+    p->link=NULL;
+    return head;
+}
+
+//读进experiement.txt
+void writertofile(polypointer a,int m,polypointer b,int n)
+{
+    FILE*fp;
+    polypointer p;
+    p=a->link;
+    int i;
+    if((fp=fopen("E://experiement.txt","w"))==NULL)
+    {
+        printf("fail to open!");
+        exit(0);
+    }
+    fprintf(fp,"%d\n",m);
+    for(i=1;i<=m;i++)
+    {
+        fprintf(fp,"%d %d\n",p->exp,p->coef);
+        //fprintf(fp,"%d\n");
+        p=p->link;
+    }
+    polypointer q;
+    q=b->link;
+    fprintf(fp,"%d\n",n);
+    for(i=1;i<=n;i++)
+    {
+        fprintf(fp,"%d %d\n",q->exp,q->coef);
+        //fprintf(fp,"%d\n");
+        q=q->link;
+    }
+}
+
+//读取信息
+void redfromfile(polypointer a,int *m,polypointer b,int *n)
+{
+    FILE*fp;
+    polypointer p;
+    int i;
+    p=a->link;
+     if((fp=fopen("E://experiement.txt","w"))==NULL)
+    {
+        printf("fail to open!");
+        exit(0);
+    }
+    fscanf(fp,"%d\n",m);//A式子的项数
+    for(i=1;i<=*m;i++)
+    {
+        fscanf(fp,"%d %d\n",&(p->exp),&(p->coef));
+        //fprintf(fp,"%d\n");
+        p=p->link;
+    }
+
+    fscanf(fp,"%d\n",n);//B式子的项数
+    polypointer q;
+    q=b->link;
+    for(i=1;i<=*n;i++)
+    {
+        fscanf(fp,"%d %d\n",&(q->exp),&(q->coef));
+        //fprintf(fp,"%d\n");
+        q=q->link;
+    }
+}
+
 
 //创建链表输入函数
 polypointer createLink(int n)
@@ -45,14 +139,14 @@ polypointer createLink(int n)
     for(i=1;i<=n;i++)
     {
         p=(polypointer)malloc(sizeof(struct polynode));
-        printf("请输入指数");
-        scanf("%d",&p->exp);
-         printf("请输入系数");
-        scanf("%d",&p->coef);
+        printf("exp and coef");
+        scanf("%d %d",&p->exp,&p->coef);
+        //printf("请输入系数");
+        //scanf("%d",&p->coef);
         pre->link=p;
         pre=p;
     }
-    p->link=NULL;
+    //p->link=NULL;
     return head;
 }
 
@@ -135,3 +229,11 @@ polypointer PolyAdd(polypointer a,polypointer b)
     //free(p);//删除临时用的结点
     return c;//指向第一个元素的指针
 }
+//多项式的乘法
+polypointer PolyAdd(polypointer a,polypointer b)
+{
+    
+}
+
+
+
